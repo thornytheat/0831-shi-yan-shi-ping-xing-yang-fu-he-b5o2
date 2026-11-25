@@ -1,0 +1,71 @@
+:root {--bg:#eef4fb;--surface:#f8fbff;--ink:#162a49;--accent:#264d9d;--radius:4px;
+--line:color-mix(in srgb,#162a49 22%,#f8fbff);--soft:color-mix(in srgb,#264d9d 11%,#f8fbff);
+--muted:color-mix(in srgb,#162a49 77%,#f8fbff);--rail:color-mix(in srgb,#264d9d 8%,#eef4fb);
+--fault:#9c251f;--pad:13px;--gap:10px;--row:30px;
+--font-ui:"Helvetica Neue","PingFang SC",sans-serif;--font-num:ui-monospace,monospace;
+--bar:59px;--nav:182px;--stroke:2px;--lift:2px;
+color-scheme:light}
+body.lab {margin:0;background:var(--bg);color:var(--ink);font:14px/1.5 var(--font-ui)}
+.lab * {box-sizing:border-box}
+.lab [hidden] {display:none!important}
+.lab .desk-lab {display:grid;grid-template-columns:var(--nav) minmax(0,1fr);min-height:100vh}
+.lab .work-lab {display:flex;flex-direction:column;min-width:0}
+.lab .rail {background:var(--rail);position:sticky;top:0;align-self:start;height:100vh;padding:calc(1.45 * var(--pad)) var(--pad);border-right:1px solid var(--line)}
+.lab .brand {display:grid;place-content:center;width:52px;height:60px;border-radius:var(--radius);border:var(--stroke) solid var(--accent);font:700 26px/1 var(--font-ui);text-decoration:none}
+.lab .stages {display:grid;gap:7px;margin:28px 0 16px}
+.lab .stages button,.rail-link {text-align:left;display:block;width:100%;overflow-wrap:anywhere}
+.lab .rail-link {padding:.6em .75em;color:var(--muted)}
+.lab .mast {display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;background:var(--surface);padding:calc(.72 * var(--pad)) calc(1.5 * var(--pad));min-height:var(--bar);border-bottom:1px solid var(--line)}
+.lab .mast h1 {font-size:clamp(22px,3vw,40px);line-height:1.12;margin:0}
+.lab .role {color:var(--muted);margin:0;font-weight:600}
+.lab .main-lab {flex:1;display:grid;grid-template-areas:"s s" "k c" "i c" "r r" "a a";grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:var(--gap);align-content:start;padding:var(--pad)}
+.lab .source {grid-area:s;display:flex;align-items:center;flex-wrap:wrap;gap:var(--gap);padding:var(--pad);background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);min-width:0}
+.lab .source input {position:absolute;width:1px;height:1px;opacity:0}
+.lab .source:has(input:focus-visible) .file {outline:2px solid var(--accent);outline-offset:3px}
+.lab .file {cursor:pointer;color:var(--accent);font-weight:700;text-decoration:underline;text-underline-offset:3px}
+.lab #file-name {overflow-wrap:anywhere;max-width:100%}
+.lab button,select,textarea {font:inherit;color:inherit;border:1px solid var(--line);padding:.42em .68em;background:var(--soft);border-radius:var(--radius);cursor:pointer}
+.lab button:is(:hover,[aria-pressed="true"]),.action {background:var(--accent);color:var(--surface);border-color:var(--accent)}
+.lab button:disabled {opacity:.56;cursor:default}
+.lab :focus-visible {outline:2px solid var(--accent);outline-offset:3px}
+.lab a {color:var(--accent);text-underline-offset:.2em}
+.lab .kpis {grid-area:k;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:var(--gap);min-width:0}
+.lab .metric {background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:var(--pad);display:grid;align-content:center;overflow-wrap:anywhere}
+.lab .metric strong {font:600 clamp(21px,3.2vw,44px)/1.1 var(--font-num);font-variant-numeric:tabular-nums}
+.lab .panel {background:var(--surface);padding:var(--pad);min-width:0;border:1px solid var(--line);border-radius:var(--radius)}
+.lab .results {grid-area:r}
+.lab .chart {grid-area:c}
+.lab .inspection {grid-area:i}
+.lab .archive {grid-area:a}
+.lab h2 {font-size:18px;margin:0 0 .65em}
+.lab .panel-head {display:flex;flex-wrap:wrap;gap:8px;align-items:baseline;justify-content:space-between}
+.lab #counts,#run-status {color:var(--muted);overflow-wrap:anywhere}
+.lab .scroll {overflow:auto;max-height:263px}
+.lab table {border-collapse:collapse;width:100%;font-variant-numeric:tabular-nums;min-width:350px}
+.lab th,td {text-align:left;height:var(--row);padding:4px 11px;border-bottom:1px solid var(--line);white-space:nowrap}
+.lab th {position:sticky;top:0;background:var(--surface);color:var(--muted)}
+.lab td:nth-child(n+2):nth-child(-n+4) {text-align:right;font-family:var(--font-num)}
+.lab .badge {color:var(--fault);font-size:.87em;padding:2px 4px;white-space:nowrap}
+.lab .badge:is([data-result="READY"],[data-result="APPROVED"]) {color:var(--accent)}
+.lab #detail {margin:0;max-height:260px;overflow:auto;overflow-wrap:anywhere;font: .94em/1.55 var(--font-ui)}
+.lab #detail dl {margin:0 0 0 .55em;padding-left:.65em;border-left:1px solid var(--line)}
+.lab #detail dt {font-weight:600;color:var(--muted)}
+.lab #detail dd {margin:0 0 .43em .4em}
+.lab #history {list-style:none;padding:0;display:flex;flex-wrap:wrap;gap:var(--gap);margin:0}
+.lab #history li {display:flex;align-items:center;flex-wrap:wrap}
+.lab #review {margin-top:14px;max-width:580px}
+.lab textarea {display:block;width:100%;min-height:54px;cursor:text}
+.lab .review-actions {display:flex;gap:6px;margin:8px 0}
+.lab .statusbar {display:flex;flex-wrap:wrap;gap:12px;justify-content:space-between;border-top:1px solid var(--line);padding:10px var(--pad);color:var(--muted)}
+.lab [data-failure="true"] {color:var(--fault)}
+.lab .results tr:hover{outline:1px solid var(--accent)}
+.lab .chart{border-bottom:3px solid var(--accent)}
+.lab .stages button{border-width:0 0 1px;border-radius:0}
+.lab .badge::before{content:"• "}
+@media(max-width:1110px) {.lab .main-lab {grid-template-columns:repeat(2,minmax(0,1fr));grid-template-areas:"s s" "k k" "c i" "r r" "a a"} }
+@media(max-width:700px) {.lab .desk-lab {display:block} .lab .rail {position:static;height:auto;border:0;padding:9px var(--pad)} .lab .brand,.lab .rail-link {display:none} .lab .stages {margin:0;display:flex;flex-wrap:wrap} .lab .stages button {width:auto} .lab .main-lab {grid-template-columns:minmax(0,1fr);grid-template-areas:"s" "k" "c" "r" "i" "a"} .lab .kpis {grid-template-columns:repeat(2,minmax(0,1fr))} }
+@media print {.lab .source,.lab .rail,.lab .archive,.lab .statusbar {display:none} .lab .desk-lab,.lab .main-lab {display:block} .lab .panel {margin-bottom:8px} }
+
+.sample-rule{display:grid;grid-template-columns:3.5em 1fr 3em;gap:8px;padding:10px 0;border-bottom:1px dashed var(--line)}.sample-id,.sample-method{font-family:var(--font-num)}.sample-pass{color:var(--accent)}.sample-fail{color:var(--fault)}
+
+.chart-note{margin-top:9px;color:var(--muted);overflow-wrap:anywhere}
