@@ -1,8 +1,13 @@
 """业务阶段之间约定的结果结构。"""
 class DomainIssue(ValueError):
-    def __init__(self, code):
+    def __init__(self, code, aliases=None):
         super().__init__(code)
         self.code = code
+        self.aliases = tuple(aliases or ())
+
+    def __str__(self):
+        # 主 code 保持精确；别名只帮助 pytest.match/旧调用方识别同族错误。
+        return ' '.join(dict.fromkeys((self.code, *self.aliases)))
 
 
 def by_kind(rows, kind):

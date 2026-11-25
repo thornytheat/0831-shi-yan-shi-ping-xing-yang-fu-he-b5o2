@@ -67,5 +67,6 @@ body.lab {margin:0;background:var(--bg);color:var(--ink);font:14px/1.5 var(--fon
 @media print {.lab .source,.lab .rail,.lab .archive,.lab .statusbar {display:none} .lab .desk-lab,.lab .main-lab {display:block} .lab .panel {margin-bottom:8px} }
 
 .sample-rule{display:grid;grid-template-columns:3.5em 1fr 3em;gap:8px;padding:10px 0;border-bottom:1px dashed var(--line)}.sample-id,.sample-method{font-family:var(--font-num)}.sample-pass{color:var(--accent)}.sample-fail{color:var(--fault)}
+.sample-board{margin-top:16px}.sample-board h3{font-size:16px;margin:0}.sample-scroll{max-height:320px}#sample-table{min-width:620px}#sample-table th:nth-child(n),#sample-table td:nth-child(n){text-align:left;font-family:var(--font-ui);white-space:normal}.record-chip{display:inline-block;margin:1px 3px 1px 0;padding:1px 5px;border:1px solid var(--line);border-radius:3px;font-family:var(--font-num);font-size:.86em}.sample-actions{white-space:nowrap}
 
 .chart-note{margin-top:9px;color:var(--muted);overflow-wrap:anywhere}

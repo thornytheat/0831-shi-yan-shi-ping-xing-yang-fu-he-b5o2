@@ -1,5 +1,5 @@
 import {request} from './client.js';
-import {snapshot, history} from './view.js';
+import {snapshot, history, sampleTable} from './view.js';
 import {visualize} from './plots.js';
 
 const form = document.querySelector('#source');
@@ -44,6 +44,7 @@ function show(payload, committed = false) {
   report = committed ? payload.report : payload;
   detail.elements.note.value = batch?.note || '';
   selected = report.cases?.[0]?.case;
+  sampleTable(committed ? payload.samples : []);
   draw();
 }
 
@@ -87,6 +88,21 @@ file.addEventListener('change',()=>{filename.textContent=file.files[0]?.name || 
 document.querySelector('#rows').addEventListener('click',event=>{
   const button = event.target.closest('[data-case]');
   if (button) { selected = button.dataset.case; draw(); document.querySelector(`[data-case="${CSS.escape(selected)}"]`).focus(); }
+});
+document.querySelector('#sample-table').addEventListener('click',event=>{
+  const button = event.target.closest('[data-release-sample]');
+  if (!button || !batch) return;
+  perform(async()=>{
+    const key = button.dataset.releaseSample;
+    const payload = {revision:Number(button.dataset.revision ?? 0)};
+    const note = detail.elements.note.value.trim();
+    if (note) payload.note = note;
+    await request(`/api/runs/${batch.id}/samples/${key}/release`,{
+      method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(payload),
+    });
+    const result = await request(`/api/runs/${batch.id}`);
+    stage='balance'; show(result,true); announce(`样品 ${key} 已签发`); await refresh();
+  });
 });
 document.querySelector('#history').addEventListener('click',event=>{
   const button = event.target.closest('[data-run]');

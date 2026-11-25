@@ -40,6 +40,10 @@
     <div class="review-actions"><button name="decision" value="HELD">暂缓</button><button class="action" name="decision" value="APPROVED">签发</button></div>
     <a id="evidence">下载复核证据</a>
   </form>
+  <section class="sample-board" aria-labelledby="sample-board-title">
+    <div class="panel-head"><h3 id="sample-board-title">各样品签发结论</h3><span id="sample-summary">执行批次后显示</span></div>
+    <div class="scroll sample-scroll"><table id="sample-table" aria-label="样品签发结论和采用测量记录"></table></div>
+  </section>
 </aside>
 {% endmacro %}
 {% macro status() %}

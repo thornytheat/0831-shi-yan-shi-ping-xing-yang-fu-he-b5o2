@@ -13,6 +13,7 @@
 | M5 运行对账 | 对照输入、采信和隔离行 | `POST /api/stages/balance` | `app/modules/reconcile.py` | `tests/test_reconcile.py` |
 | M6 批次复核 | 执行批次并签发或暂缓 | `POST /api/runs、PATCH /api/runs/<id>` | `app/review/service.py` | `tests/test_review.py` |
 | M7 证据交付 | 下载复核清单 | `GET /api/runs/<id>/evidence` | `app/evidence/render.py` | `tests/test_evidence.py` |
+| M8 样品签发 | 复测、更正、样品结论与乐观锁 | `GET/POST /api/runs/<id>/samples...` | `app/release/service.py` | `tests/test_sample_release.py` |
 
 ## 输入陷阱
 
@@ -35,3 +36,5 @@
 浓度整数为微克每升。双方低于检出限标为共同未检出；一侧低于检出限进人工复核。双方均达到 5 倍定量限时用相对偏差，其余用绝对差。用整数交叉积比较边界，显示值按基点向下取整。
 
 `sample_data/incoming.csv` 的 0003 组触发预检异常，0004 组触发业务判定。`tests/test_calculate.py` 还核对逐组结论和证据字段。
+
+样品级签发不得混合配对：单侧复测只表示同次复测不完整；两侧 LOD/LOQ 不一致按 `METHOD_MISMATCH` 暂缓。原测合格可单独签发；复测合格必须另有原测作废凭据。复测更正入账后推进版本，旧结论签发以 `STALE_REVIEW` 拒绝。

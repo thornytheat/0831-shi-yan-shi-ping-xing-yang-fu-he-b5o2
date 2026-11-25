@@ -22,7 +22,10 @@ const labels = {READY:'通过', MISMATCH:'数值不符', PENDING:'待复核', AP
   INVALID_SAMPLE:'样本登记无效', INVALID_REGISTER:'作者登记无效', INVALID_SIMILARITY:'相似度无效',
   AUTHORITY_EXCLUSION_CONFLICT:'权威编号与禁用关系冲突', HISTORY_LIMIT:'历史窗口过长',
   DAY_OUT_OF_RANGE:'观测日超出范围', INVALID_COHORT:'入柜队列无效', PICKUP_CONFLICT:'领取记录冲突',
-  INVALID_OBSERVATION:'抽检记录无效', INVALID_SAMPLE_REGISTRY:'样本记录无效'};
+  INVALID_OBSERVATION:'抽检记录无效', INVALID_SAMPLE_REGISTRY:'样本记录无效',
+  ORIGINAL_PAIR_QUALIFIED:'原测成对合格', RETEST_PAIR_QUALIFIED_WITH_VOID_EVIDENCE:'复测合格且原测已作废',
+  ORIGINAL_VOID_EVIDENCE_REQUIRED:'复测合格，待原测作废凭据', RETEST_PAIR_INCOMPLETE:'同次复测缺一侧',
+  RETEST_METHOD_MISMATCH:'复测 LOD/LOQ 不一致', LIMIT_BASIS_MISSING:'缺少限值依据'};
 
 const valueLabels = {RPD:'相对偏差', ABSOLUTE:'绝对差', BOTH_ND:'双方未检出', MIXED_LOD:'一侧低于检出限',
   EQUALITY:'等值删除', POSITION:'位置删除', PRIMARY:'初次遮蔽', SECONDARY:'追加遮蔽',
@@ -116,4 +119,60 @@ export function history(items, active) {
     target.append(item);
   }
   if (!items.length) target.append(element('li','尚无执行批次'));
+}
+
+const basisLabels = {ORIGINAL:'原测', RETEST:'同次复测'};
+
+export function sampleTable(samples) {
+  const table = document.querySelector('#sample-table');
+  const summary = document.querySelector('#sample-summary');
+  if (!table) return;
+  table.replaceChildren();
+  const head = element('tr');
+  head.append(...['业务组','样品','签发结论','判定原因','采用依据与记录','操作'].map(title => element('th', title, {scope:'col'})));
+  table.createTHead().append(head);
+  const body = table.createTBody();
+  if (!samples?.length) {
+    body.insertRow().insertCell().textContent = '执行批次后显示样品结论';
+    if (summary) summary.textContent = '暂无样品';
+    return;
+  }
+  for (const item of samples) {
+    const tr = body.insertRow();
+    tr.insertCell().textContent = item.case || item.case_id || '—';
+    tr.insertCell().textContent = item.sample || item.sample_id || '—';
+    tr.insertCell().append(badge(item.status));
+    tr.insertCell().textContent = labels[item.reason] || item.reason || '—';
+
+    const evidenceCell = tr.insertCell();
+    const basis = item.adopted?.basis;
+    evidenceCell.append(element('div', basisLabels[basis] || '无可签发依据'));
+    const records = item.adopted_records || item.used_records || [];
+    if (records.length) {
+      for (const record of records) evidenceCell.append(element('span', record, {class:'record-chip'}));
+      if (item.adopted?.evaluation?.mode) {
+        evidenceCell.append(element('div', `${item.adopted.evaluation.mode} · ${item.adopted.evaluation.value ?? '—'}`));
+      }
+    } else {
+      evidenceCell.append(element('span', '未采用测量记录'));
+    }
+
+    const actionCell = tr.insertCell();
+    actionCell.className = 'sample-actions';
+    if (item.status === 'APPROVED') {
+      actionCell.append(element('span', '已签发'));
+    } else {
+      const button = element('button', '签发该样品', {
+        type:'button',
+        'data-release-sample':item.key,
+        'data-revision':String(item.revision ?? 0),
+      });
+      button.disabled = !item.eligible;
+      button.title = item.eligible ? '按当前测量依据签发' : (labels[item.reason] || item.reason || '暂不可签发');
+      actionCell.append(button);
+    }
+  }
+  const approved = samples.filter(item => item.status === 'APPROVED').length;
+  const issuable = samples.filter(item => item.eligible && item.status !== 'APPROVED').length;
+  if (summary) summary.textContent = `共 ${samples.length} · 已签发 ${approved} · 可签发 ${issuable}`;
 }

@@ -5,6 +5,7 @@ from app.modules.grouping import case_groups
 from app.modules.policy import policy
 from app.modules.prepare import prepare
 from app.modules.reconcile import balance
+from app.modules.sample_index import build_sample_index
 
 
 def evaluate(rows, stage):
@@ -27,6 +28,14 @@ def run(data, stage=5):
         return output
     cases = [evaluate(rows, stage) for _, rows in case_groups(intake['rows'])]
     output['cases'] = cases
+    sample_index = build_sample_index(intake['rows'])
+    output['samples'] = sample_index
+    output['sample_index'] = sample_index
+    samples_by_case = {}
+    for sample in sample_index:
+        samples_by_case.setdefault(sample['case'], []).append(sample)
+    for case in cases:
+        case['samples'] = samples_by_case.get(case['case'], [])
     if stage >= 5:
         output['balance'] = balance(intake,cases)
     return output
